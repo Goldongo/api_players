@@ -1,32 +1,30 @@
 from sqlalchemy.orm import Session
+from . import models, schemas
 
-from . import models
+def get_player(db: Session, player_id: int):
+    return db.query(models.Player).filter(models.Player.id == player_id).first()
 
-def get_jugador(db: Session, jugador_id: int):
-    return db.query(models.Jugador).filter(models.Jugador.id == jugador_id).first()
+def get_players(db: Session, skip: int = 0, limit: int = 10):
+    return db.query(models.Player).offset(skip).limit(limit).all()
 
-def get_jugadores(db: Session, skip: int = 0, limit: int = 10):
-    return db.query(models.Jugador).offset(skip).limit(limit).all()
+def get_player_by_name(db: Session, name: str):
+    return db.query(models.Player).filter(models.Player.name == name).all()
 
-def create_jugador(db: Session, jugador: models.Jugador):
-    db.add(jugador)
+def get_player_by_position(db: Session, position: str):
+    return db.query(models.Player).filter(models.Player.position == position).all()
+
+def create_player(db: Session, player: schemas.PlayerCreate):
+    db_player = models.Player(**player.dict())
+    db.add(db_player)
     db.commit()
-    db.refresh(jugador)
-    return jugador
+    db.refresh(db_player)
+    return db_player
 
-def delete_jugador(db: Session, jugador_id: int):
-    db_jugador = get_jugador(db, jugador_id)
-    if db_jugador:
-        db.delete(db_jugador)
+def create_players_from_csv(db: Session, csv_file: str):
+    import csv
+    with open(csv_file, newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            player = models.Player(name=row['name'], position=row['position'], overall=int(row['overall']))
+            db.add(player)
         db.commit()
-    return db_jugador
-
-def update_jugador(db: Session, jugador_id: int, jugador: models.Jugador):
-    db_jugador = get_jugador(db, jugador_id)
-    if db_jugador:
-        for key, value in jugador.dict().items():
-            setattr(db_jugador, key, value)
-        db.commit()
-        db.refresh(db_jugador)
-    return db_jugador
-

@@ -1,14 +1,14 @@
 from pydantic import BaseModel
 
-class JugadorBase(BaseModel):
-    nombre: str
-    posicion: str
+class PlayerBase(BaseModel):
+    name: str
+    position: str
     overall: int
 
-class JugadorCreate(JugadorBase):
+class PlayerCreate(PlayerBase):
     pass
 
-class Jugador(JugadorBase):
+class Player(PlayerBase):
     id: int
 
     class Config:

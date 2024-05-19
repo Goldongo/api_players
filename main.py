@@ -14,27 +14,37 @@ def get_db():
     finally:
         db.close()
 
-@app.post("/jugadores/", response_model=schemas.Jugador)
-def create_jugador(jugador: schemas.JugadorCreate, db: Session = Depends(get_db)):
-    db_jugador = models.Jugador(nombre=jugador.nombre, posicion=jugador.posicion, overall=jugador.overall)
-    return crud.create_jugador(db=db, jugador=db_jugador)
+@app.post("/players/", response_model=schemas.Player)
+def create_player(player: schemas.PlayerCreate, db: Session = Depends(get_db)):
+    return crud.create_player(db=db, player=player)
 
-@app.get("/jugadores/", response_model=list[schemas.Jugador])
-def read_jugadores(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    jugadores = crud.get_jugadores(db, skip=skip, limit=limit)
-    return jugadores
+@app.get("/players/", response_model=list[schemas.Player])
+def read_players(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+    players = crud.get_players(db, skip=skip, limit=limit)
+    return players
 
-@app.get("/jugadores/{jugador_id}", response_model=schemas.Jugador)
-def read_jugador(jugador_id: int, db: Session = Depends(get_db)):
-    db_jugador = crud.get_jugador(db, jugador_id=jugador_id)
-    if db_jugador is None:
-        raise HTTPException(status_code=404, detail="Jugador not found")
-    return db_jugador
+@app.get("/players/{player_id}", response_model=schemas.Player)
+def read_player(player_id: int, db: Session = Depends(get_db)):
+    db_player = crud.get_player(db, player_id=player_id)
+    if db_player is None:
+        raise HTTPException(status_code=404, detail="Player not found")
+    return db_player
 
-@app.put("/jugadores/{jugador_id}", response_model=schemas.Jugador)
-def update_jugador(jugador_id: int, jugador: schemas.JugadorCreate, db: Session = Depends(get_db)):
-    return crud.update_jugador(db, jugador_id=jugador_id, jugador=jugador)
+@app.get("/players/name/{name}", response_model=list[schemas.Player])
+def read_player_by_name(name: str, db: Session = Depends(get_db)):
+    players = crud.get_player_by_name(db, name=name)
+    if not players:
+        raise HTTPException(status_code=404, detail="Player not found")
+    return players
 
-@app.delete("/jugadores/{jugador_id}", response_model=schemas.Jugador)
-def delete_jugador(jugador_id: int, db: Session = Depends(get_db)):
-    return crud.delete_jugador(db, jugador_id=jugador_id)
+@app.get("/players/position/{position}", response_model=list[schemas.Player])
+def read_player_by_position(position: str, db: Session = Depends(get_db)):
+    players = crud.get_player_by_position(db, position=position)
+    if not players:
+        raise HTTPException(status_code=404, detail="Player not found")
+    return players
+
+@app.post("/players/load_csv/")
+def load_players_from_csv(db: Session = Depends(get_db)):
+    crud.create_players_from_csv(db, "Dataset_Players.csv")
+    return {"detail": "Players loaded from CSV"}

@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, String
 from .database import Base
 
-class Jugador(Base):
-    __tablename__ = "jugadores"
+class Player(Base):
+    __tablename__ = "players"
 
     id = Column(Integer, primary_key=True, index=True)
-    nombre = Column(String, index=True)
-    posicion = Column(String, index=True)
+    name = Column(String, index=True)
+    position = Column(String, index=True)
     overall = Column(Integer)
