@@ -1,7 +1,7 @@
 import csv
 from sqlalchemy.orm import Session
-from .database import SessionLocal, engine
-from .models import Player
+from database import SessionLocal, engine
+from models import Player
 import os
 
 def create_players_from_csv(db: Session, csv_file: str):
