@@ -4,3 +4,4 @@ sqlalchemy
 uvicorn
 python-multipart
 pymysql
+cryptography

@@ -2,10 +2,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-
-DOCKER_MYSQL_HOST = "54.221.47.71"  
+DOCKER_MYSQL_HOST = "54.221.47.71"
 DOCKER_MYSQL_PORT = 3306
-
 
 MYSQL_DATABASE = "players"
 MYSQL_USER = "my_user"
