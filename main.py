@@ -4,15 +4,15 @@ import crud, models, schemas
 from database import SessionLocal, engine
 from fastapi.middleware.cors import CORSMiddleware
 
-
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
 origins = [
-    "lb-prod-2030613354.us-east-1.elb.amazonaws.com",
-    "lb-prod-2030613354.us-east-1.elb.amazonaws.com:8000",
-    "lb-prod-2030613354.us-east-1.elb.amazonaws.com:8080",
+    "http://lb-prod-2030613354.us-east-1.elb.amazonaws.com",
+    "http://lb-prod-2030613354.us-east-1.elb.amazonaws.com:8000",
+    "http://lb-prod-2030613354.us-east-1.elb.amazonaws.com:8080",
+    "http://localhost:8080",
     "*"
 ]
 
@@ -24,7 +24,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 def get_db():
     db = SessionLocal()
     try:
@@ -32,11 +31,11 @@ def get_db():
     finally:
         db.close()
 
-@app.post("/players/", response_model=schemas.Player)
+@app.post("/players", response_model=schemas.Player)
 def create_player(player: schemas.PlayerCreate, db: Session = Depends(get_db)):
     return crud.create_player(db=db, player=player)
 
-@app.get("/players/", response_model=list[schemas.Player])
+@app.get("/players", response_model=list[schemas.Player])
 def read_players(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     players = crud.get_players(db, skip=skip, limit=limit)
     return players
@@ -62,7 +61,7 @@ def read_player_by_position(position: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Player not found")
     return players
 
-@app.post("/players/load_csv/")
+@app.post("/players/load_csv")
 def load_players_from_csv(db: Session = Depends(get_db)):
     crud.create_players_from_csv(db, "Dataset_Players.csv")
     return {"detail": "Players loaded from CSV"}
