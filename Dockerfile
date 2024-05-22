@@ -1,6 +1,6 @@
 FROM python:3-slim
 WORKDIR /goldongo
-COPY req.txt .
+COPY requirements.txt .
 RUN pip3 install --no-input -r requirements.txt
 COPY . .
 EXPOSE 8000
