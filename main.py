@@ -2,10 +2,28 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 import crud, models, schemas
 from database import SessionLocal, engine
+from fastapi.middleware.cors import CORSMiddleware
+
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+origins = [
+    "lb-prod-2030613354.us-east-1.elb.amazonaws.com",
+    "lb-prod-2030613354.us-east-1.elb.amazonaws.com:8000",
+    "lb-prod-2030613354.us-east-1.elb.amazonaws.com:8080",
+    "*"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 def get_db():
     db = SessionLocal()
