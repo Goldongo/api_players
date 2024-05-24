@@ -36,7 +36,7 @@ def create_player(player: schemas.PlayerCreate, db: Session = Depends(get_db)):
     return crud.create_player(db=db, player=player)
 
 @app.get("/players", response_model=list[schemas.Player])
-def read_players(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+def read_players(skip: int = 0, limit: int = 50, db: Session = Depends(get_db)):
     players = crud.get_players(db, skip=skip, limit=limit)
     return players
 
